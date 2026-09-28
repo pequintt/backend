@@ -26,6 +26,26 @@ def save_data():
         "message": "Данные успешно сохранены"
     })
 
+@app.get("/api/data")
+def get_data():
+    if not DATA_FILE.exists():
+        return jsonify({
+            "data": ""
+        })
+
+    with DATA_FILE.open("r", encoding="utf-8") as file:
+        lines = file.readlines()
+
+    limit = request.args.get("limit", type=int)
+
+    if limit is not None and limit > 0:
+        lines = lines[-limit:]
+
+    return jsonify({
+        "data": "".join(lines)
+    })
+
+
 if __name__ == "__main__":
     app.run(
         host="127.0.0.1",
